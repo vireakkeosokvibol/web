@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+  - "lts/*"
+  - "node"
+os:
+  - linux
+  - osx
+  - windows
+addons:
+  chrome: stable
+matrix:
+  allow_failures:
+    - node_js:  "node"
+    - os: windows
