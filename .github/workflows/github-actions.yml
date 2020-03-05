@@ -13,7 +13,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install
+      - run: npm update
+      - run: npm install puppeteer --save-dev
+      - run: npm run test_headless
       - run: npm run build
-      - run: npm test_headless
         env:
           CI: true
