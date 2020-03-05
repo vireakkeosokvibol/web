@@ -1,4 +1,5 @@
 <h2 align="center">bondom Web</h2>
-<p>
-	[![actions status](https://github.com/vireakkeosokvibol/web/workflows/server/badge.svg)](https://github.com/vireakkeosokvibol/web/workflows/server/badge.svg) [![dependencies Status](https://david-dm.org/vireakkeosokvibol/web/status.svg)](https://david-dm.org/vireakkeosokvibol/web) [![devDependencies Status](https://david-dm.org/vireakkeosokvibol/web/dev-status.svg)](https://david-dm.org/vireakkeosokvibol/web?type=dev) [![codecov status](https://codecov.io/gh/vireakkeosokvibol/web/branch/github-actions/graph/badge.svg)](https://codecov.io/gh/vireakkeosokvibol/web)
+
+<p align="center">
+<a href="https://github.com/vireakkeosokvibol/web/actions"><img src="https://github.com/vireakkeosokvibol/web/workflows/server/badge.svg?branch=github-actions" /></a> <a href="https://david-dm.org/vireakkeosokvibol/web/"><img src="https://david-dm.org/vireakkeosokvibol/web/status.svg" /></a> <a href="https://david-dm.org/vireakkeosokvibol/web?type=dev"><img src="https://david-dm.org/vireakkeosokvibol/web/dev-status.svg" /></a> <a href="https://codecov.io/gh/vireakkeosokvibol/web"><img src="https://codecov.io/gh/vireakkeosokvibol/web/graph/badge.svg" /></a>
 </p>
