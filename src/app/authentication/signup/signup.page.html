@@ -1,3 +1,4 @@
+<div id="recaptcha-container"></div>
 <app-header></app-header>
 
 <ion-content>
@@ -12,16 +13,16 @@
                 <h3>Sign in with your account.</h3>
               </ion-text>
               <!--
-                Start login form.
+                Start signup form.
               -->
-              <form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+              <form [formGroup]="signUpFormGroup" (ngSubmit)="onSubmit()">
                 <ion-item>
-                  <ion-label position="floating" color="medium">Email, username or phone number <ion-text color="danger">*</ion-text></ion-label>
-                  <ion-input required formControlName="account" type="text"></ion-input>
+                  <ion-label position="floating" color="medium">Phone number<ion-text color="danger">*</ion-text></ion-label>
+                  <ion-input required formControlName="tel" type="text"></ion-input>
                 </ion-item>
                 <ion-item>
                   <ion-label position="floating" color="medium">Password <ion-text color="danger">*</ion-text></ion-label>
-                  <ion-input required formControlName="password" type="text"></ion-input>
+                  <ion-input required formControlName="password" type="password"></ion-input>
                 </ion-item>
                 <ion-text style="font-size: 13px;" color="primary">
                   <a routerLink style="text-decoration: none;">Forget your login detail?</a>
@@ -29,7 +30,7 @@
                 <ion-item lines="none">
                   <ion-label></ion-label>
                   <ion-button block color="primary" type="submit" expand="block" size="default" style="width: 100%;">
-                    Login
+                    sign up
                   </ion-button>
                 </ion-item>
               </form>
@@ -46,6 +47,7 @@
       <ion-col size="2"></ion-col>
     </ion-row>
   </ion-grid>
+  
 </ion-content>
 
 <app-footer></app-footer>

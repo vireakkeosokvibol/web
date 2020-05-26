@@ -16,6 +16,7 @@ jobs:
       - run: npm update
       - run: npm install puppeteer --save-dev
       - run: npm run test_headless
+      - run: npm run lint
       - run: npm install -g codecov
       - run: codecov
       - run: npm run build
