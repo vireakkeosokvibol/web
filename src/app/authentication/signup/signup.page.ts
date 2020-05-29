@@ -1,12 +1,13 @@
-import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
-import * as firebase from "firebase";
-import { FIREBASE } from "../../../config.json";
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import * as firebase from 'firebase';
+import { FIREBASE } from '../../../config.json';
+import { PhoneValidator } from '../phone.validator';
 
 @Component({
-  selector: "app-signup",
-  templateUrl: "./signup.page.html",
-  styleUrls: ["./signup.page.scss"],
+  selector: 'app-signup',
+  templateUrl: './signup.page.html',
+  styleUrls: ['./signup.page.scss'],
 })
 export class SignupPage implements OnInit {
   private signUpFormGroup: FormGroup;
@@ -15,22 +16,27 @@ export class SignupPage implements OnInit {
 
   constructor(private formBuilder: FormBuilder) {
     this.signUpFormGroup = this.formBuilder.group({
-      tel: "",
-      password: "",
+      tel: [
+        '',
+        Validators.compose([Validators.required, PhoneValidator.validate()]),
+      ],
+      password: '',
     });
   }
 
   protected async onSubmit(): Promise<void> {
     if (this.signUpFormGroup.invalid === false) {
       try {
-        await this.firebaseApp
+        const result = await this.firebaseApp
           .auth()
           .signInWithPhoneNumber(
             this.signUpFormGroup.value.tel,
             this.recaptchaVerifier
           );
-        console.log("from success");
+        console.log(result);
+        this.recaptchaVerifier.reset();
       } catch (error) {
+        this.recaptchaVerifier.reset();
         console.log(error);
       }
     }
@@ -40,9 +46,9 @@ export class SignupPage implements OnInit {
     this.firebaseApp = firebase.initializeApp(FIREBASE);
     this.firebaseApp.auth();
     this.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-      "recaptcha-container",
+      'recaptcha-container',
       {
-        size: "invisible",
+        size: 'invisible',
       }
     );
     this.recaptchaVerifier.render();

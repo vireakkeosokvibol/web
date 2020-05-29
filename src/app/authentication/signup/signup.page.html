@@ -1,4 +1,3 @@
-<div id="recaptcha-container"></div>
 <app-header></app-header>
 
 <ion-content>
@@ -17,11 +16,13 @@
               -->
               <form [formGroup]="signUpFormGroup" (ngSubmit)="onSubmit()">
                 <ion-item>
-                  <ion-label position="floating" color="medium">Phone number<ion-text color="danger">*</ion-text></ion-label>
+                  <ion-label position="floating" color="medium">Phone number<ion-text color="danger">*</ion-text>
+                  </ion-label>
                   <ion-input required formControlName="tel" type="text"></ion-input>
                 </ion-item>
                 <ion-item>
-                  <ion-label position="floating" color="medium">Password <ion-text color="danger">*</ion-text></ion-label>
+                  <ion-label position="floating" color="medium">Password <ion-text color="danger">*</ion-text>
+                  </ion-label>
                   <ion-input required formControlName="password" type="password"></ion-input>
                 </ion-item>
                 <ion-text style="font-size: 13px;" color="primary">
@@ -29,7 +30,8 @@
                 </ion-text>
                 <ion-item lines="none">
                   <ion-label></ion-label>
-                  <ion-button block color="primary" type="submit" expand="block" size="default" style="width: 100%;">
+                  <ion-button block color="primary" type="submit" expand="block" [disabled]="!signUpFormGroup.valid"
+                    size="default" style="width: 100%;">
                     sign up
                   </ion-button>
                 </ion-item>
@@ -47,7 +49,7 @@
       <ion-col size="2"></ion-col>
     </ion-row>
   </ion-grid>
-  
+  <div id="recaptcha-container" style="display: none;"></div>
 </ion-content>
 
 <app-footer></app-footer>
