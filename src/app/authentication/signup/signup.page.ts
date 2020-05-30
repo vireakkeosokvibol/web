@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as firebase from 'firebase';
 import { FIREBASE } from '../../../config.json';
 import { PhoneValidator } from '../phone.validator';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-signup',
@@ -14,18 +15,23 @@ export class SignupPage implements OnInit {
   private firebaseApp: any;
   private recaptchaVerifier: any;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, private httpClient: HttpClient) {
     this.signUpFormGroup = this.formBuilder.group({
       tel: [
         '',
         Validators.compose([Validators.required, PhoneValidator.validate()]),
       ],
-      password: '',
+      password: ['', Validators.compose([
+        Validators.minLength(6),
+        Validators.pattern('^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$')
+      ])],
     });
   }
 
-  protected async onSubmit(): Promise<void> {
-    if (this.signUpFormGroup.invalid === false) {
+  public async onSubmit(): Promise<void> {
+    
+    if (this.signUpFormGroup.invalid === false) {.
+      let verificationId: string;
       try {
         const result = await this.firebaseApp
           .auth()
@@ -33,11 +39,17 @@ export class SignupPage implements OnInit {
             this.signUpFormGroup.value.tel,
             this.recaptchaVerifier
           );
-        console.log(result);
+        verificationId = result.verificationId;
         this.recaptchaVerifier.reset();
       } catch (error) {
         this.recaptchaVerifier.reset();
-        console.log(error);
+        throw new Error(error)
+      }
+
+      try {
+        
+      } catch (error) {
+
       }
     }
   }
