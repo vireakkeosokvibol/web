@@ -31,7 +31,7 @@ export class SignupPage implements OnInit {
   }
 
   private async onSubmit(): Promise<void> {
-    this.signupService.submit(this.signUpFormGroup)
+    this.signupService.submit(this.signUpFormGroup);
   }
 
   ngOnInit() {
