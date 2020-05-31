@@ -15,22 +15,24 @@ export class SignupPage implements OnInit {
   private firebaseApp: any;
   private recaptchaVerifier: any;
 
-  constructor(private formBuilder: FormBuilder, private httpClient: HttpClient) {
+  constructor(private formBuilder: FormBuilder) {
     this.signUpFormGroup = this.formBuilder.group({
       tel: [
         '',
         Validators.compose([Validators.required, PhoneValidator.validate()]),
       ],
-      password: ['', Validators.compose([
-        Validators.minLength(6),
-        Validators.pattern('^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$')
-      ])],
+      password: [
+        '',
+        Validators.compose([
+          Validators.minLength(6),
+          Validators.pattern('^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$'),
+        ]),
+      ],
     });
   }
 
   public async onSubmit(): Promise<void> {
-    
-    if (this.signUpFormGroup.invalid === false) {.
+    if (this.signUpFormGroup.invalid === false) {
       let verificationId: string;
       try {
         const result = await this.firebaseApp
@@ -43,14 +45,11 @@ export class SignupPage implements OnInit {
         this.recaptchaVerifier.reset();
       } catch (error) {
         this.recaptchaVerifier.reset();
-        throw new Error(error)
+        throw new Error(error);
       }
 
       try {
-        
-      } catch (error) {
-
-      }
+      } catch (error) {}
     }
   }
 
