@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import * as firebase from 'firebase';
-import { FIREBASE } from '../../../config.json';
 import { PhoneValidator } from '../phone.validator';
-import { HttpClient } from '@angular/common/http';
+import { SignupService } from './signup.service';
 
 @Component({
   selector: 'app-signup',
@@ -12,10 +10,11 @@ import { HttpClient } from '@angular/common/http';
 })
 export class SignupPage implements OnInit {
   private signUpFormGroup: FormGroup;
-  private firebaseApp: any;
-  private recaptchaVerifier: any;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private signupService: SignupService
+  ) {
     this.signUpFormGroup = this.formBuilder.group({
       tel: [
         '',
@@ -31,37 +30,11 @@ export class SignupPage implements OnInit {
     });
   }
 
-  public async onSubmit(): Promise<void> {
-    if (this.signUpFormGroup.invalid === false) {
-      let verificationId: string;
-      try {
-        const result = await this.firebaseApp
-          .auth()
-          .signInWithPhoneNumber(
-            this.signUpFormGroup.value.tel,
-            this.recaptchaVerifier
-          );
-        verificationId = result.verificationId;
-        this.recaptchaVerifier.reset();
-      } catch (error) {
-        this.recaptchaVerifier.reset();
-        throw new Error(error);
-      }
-
-      try {
-      } catch (error) {}
-    }
+  private async onSubmit(): Promise<void> {
+    this.signupService.submit(this.signUpFormGroup)
   }
 
   ngOnInit() {
-    this.firebaseApp = firebase.initializeApp(FIREBASE);
-    this.firebaseApp.auth();
-    this.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-      'recaptcha-container',
-      {
-        size: 'invisible',
-      }
-    );
-    this.recaptchaVerifier.render();
+    this.signupService.initialize();
   }
 }
