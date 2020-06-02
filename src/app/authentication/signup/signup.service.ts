@@ -38,11 +38,13 @@ export class SignupService {
   }
 
   async codeVerify(formGroup: FormGroup): Promise<void> {
-    try {
-      const result = this.confirmationResult.confirm(formGroup.value.code);
-      console.log(result);
-    } catch (error) {
-      throw new Error(error);
-    }
+    this.confirmationResult
+      .confirm(formGroup.value.code)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
   }
 }
