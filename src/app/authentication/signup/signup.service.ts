@@ -9,6 +9,7 @@ import { FormGroup } from '@angular/forms';
 export class SignupService {
   private recaptchaVerifier: any;
   private firebaseApp: any;
+  private confirmationResult: any;
 
   constructor() {}
 
@@ -21,21 +22,27 @@ export class SignupService {
     this.recaptchaVerifier.render();
   }
 
-  async submit(formGroup: FormGroup): Promise<void> {
+  async getDetail(formGroup: FormGroup): Promise<void> {
     if (formGroup.invalid === false) {
-      let verificationId: string;
       try {
         const result = await this.firebaseApp
           .auth()
           .signInWithPhoneNumber(formGroup.value.tel, this.recaptchaVerifier);
-        verificationId = result.verificationId;
         this.recaptchaVerifier.reset();
+        this.confirmationResult = result;
       } catch (error) {
         this.recaptchaVerifier.reset();
         throw new Error(error);
       }
-      try {
-      } catch (error) {}
+    }
+  }
+
+  async codeVerify(formGroup: FormGroup): Promise<void> {
+    try {
+      const result = this.confirmationResult.confirm(formGroup.value.code);
+      console.log(result);
+    } catch (error) {
+      throw new Error(error);
     }
   }
 }

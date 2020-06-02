@@ -10,6 +10,8 @@ import { SignupService } from './signup.service';
 })
 export class SignupPage implements OnInit {
   private signUpFormGroup: FormGroup;
+  private codeVerifyFormGroup: FormGroup;
+  private step: number;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -24,14 +26,35 @@ export class SignupPage implements OnInit {
         '',
         Validators.compose([
           Validators.minLength(6),
-          Validators.pattern('^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$'),
+          Validators.pattern('^(?=.*?[a-z])(?=.*?[0-9]).{8,}'),
+        ]),
+      ],
+    });
+
+    this.codeVerifyFormGroup = this.formBuilder.group({
+      code: [
+        '',
+        Validators.compose([
+          Validators.required,
+          Validators.pattern('^[0-9]{6}$'),
         ]),
       ],
     });
   }
 
-  private async onSubmit(): Promise<void> {
-    this.signupService.submit(this.signUpFormGroup);
+  private async onSubmit(action: string): Promise<void> {
+    switch (action) {
+      case 'getDetail':
+        await this.signupService.getDetail(this.signUpFormGroup);
+        this.step = 2;
+        break;
+      case 'verifyCode':
+        await this.signupService.codeVerify(this.codeVerifyFormGroup);
+        break;
+      default: {
+        throw new Error('No form action detected!');
+      }
+    }
   }
 
   ngOnInit() {

@@ -1,7 +1,7 @@
 <app-header></app-header>
 
 <ion-content>
-  <ion-grid>
+  <ion-grid *ngIf="!step">
     <ion-row>
       <ion-col size="2"></ion-col>
       <ion-col size="8">
@@ -14,15 +14,13 @@
               <!--
                 Start signup form.
               -->
-              <form [formGroup]="signUpFormGroup" (ngSubmit)="onSubmit()">
+              <form [formGroup]="signUpFormGroup" (ngSubmit)="onSubmit('getDetail')">
                 <ion-item>
-                  <ion-label position="floating" color="medium">Phone number<ion-text color="danger">*</ion-text>
-                  </ion-label>
+                  <ion-label position="floating" color="medium">Phone number</ion-label>
                   <ion-input required formControlName="tel" type="text"></ion-input>
                 </ion-item>
                 <ion-item>
-                  <ion-label position="floating" color="medium">Password <ion-text color="danger">*</ion-text>
-                  </ion-label>
+                  <ion-label position="floating" color="medium">Password</ion-label>
                   <ion-input required formControlName="password" type="password"></ion-input>
                 </ion-item>
                 <ion-text style="font-size: 13px;" color="primary">
@@ -49,6 +47,23 @@
       <ion-col size="2"></ion-col>
     </ion-row>
   </ion-grid>
+  <div *ngIf="step === 2s">
+    <div class="border" style="width: 300px">
+      <form [formGroup]="codeVerifyFormGroup" (ngSubmit)="onSubmit('verifyCode')">
+        <ion-item>
+          <ion-label position="floating" color="medium">Enter sms code</ion-label>
+          <ion-input formControlName="code" type="text"></ion-input>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-label></ion-label>
+          <ion-button block color="primary" type="submit" expand="block" [disabled]="!codeVerifyFormGroup.valid"
+            size="default" style="width: 100%;">
+            sign up
+          </ion-button>
+        </ion-item>
+      </form>
+    </div>
+  </div>
   <div id="recaptcha-container" style="display: none;"></div>
 </ion-content>
 
