@@ -7,11 +7,11 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { APP_URI } from 'src/config.json';
 
 // Load balancing graphql endpoint with random array length of uri.
-const uri: string = APP_URI[Math.floor((Math.random() * APP_URI.length) + 1)]; // <-- add the URL of the GraphQL server here
+const uri: string = APP_URI[Math.floor(Math.random() * APP_URI.length)]; // <-- add the URL of the GraphQL server here
 export function createApollo(httpLink: HttpLink) {
   return {
     link: httpLink.create({ uri }),
-    cache: new InMemoryCache()
+    cache: new InMemoryCache(),
   };
 }
 
@@ -21,8 +21,8 @@ export function createApollo(httpLink: HttpLink) {
     {
       provide: APOLLO_OPTIONS,
       useFactory: createApollo,
-      deps: [HttpLink]
-    }
-  ]
+      deps: [HttpLink],
+    },
+  ],
 })
 export class GraphQLModule {}

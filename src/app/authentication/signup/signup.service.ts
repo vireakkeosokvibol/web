@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { initializeApp, auth } from 'firebase';
-import { FIREBASE } from '../../../config.json';
+import { FIREBASE } from 'src/config.json';
 import { FormGroup } from '@angular/forms';
+import { Apollo } from 'apollo-angular';
+import gql from 'graphql-tag';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +13,7 @@ export class SignupService {
   private firebaseApp: any;
   private confirmationResult: any;
 
-  constructor() {}
+  constructor(private apollo: Apollo) {}
 
   async initialize(): Promise<void> {
     this.firebaseApp = initializeApp(FIREBASE);
@@ -28,8 +30,10 @@ export class SignupService {
         const result = await this.firebaseApp
           .auth()
           .signInWithPhoneNumber(formGroup.value.tel, this.recaptchaVerifier);
-        this.recaptchaVerifier.reset();
+
         this.confirmationResult = result;
+
+        this.recaptchaVerifier.reset();
       } catch (error) {
         this.recaptchaVerifier.reset();
         throw new Error(error);
@@ -37,11 +41,54 @@ export class SignupService {
     }
   }
 
-  async codeVerify(formGroup: FormGroup): Promise<void> {
+  async codeVerify(
+    formGroup: FormGroup,
+    param: { tel: string; password: string }
+  ): Promise<void> {
     this.confirmationResult
       .confirm(formGroup.value.code)
-      .then((result) => {
-        console.log(result);
+      .then(async (result) => {
+        let firebaseToken: string;
+        try {
+          firebaseToken = await auth().currentUser.getIdToken(true);
+        } catch (error) {
+          throw new Error();
+        }
+
+        this.apollo
+          .mutate({
+            mutation: gql`
+              mutation users(
+                $tel: String!
+                $password: String!
+                $firebaseToken: String!
+              ) {
+                users(
+                  signup: {
+                    tel: $tel
+                    password: $password
+                    firebaseToken: $firebaseToken
+                  }
+                ) {
+                  code
+                  message
+                }
+              }
+            `,
+            variables: {
+              tel: param.tel,
+              password: param.password,
+              firebaseToken,
+            },
+          })
+          .subscribe(
+            ({ data }) => {
+              console.log(data);
+            },
+            (error) => {
+              throw new Error(error);
+            }
+          );
       })
       .catch((error) => {
         throw new Error(error);

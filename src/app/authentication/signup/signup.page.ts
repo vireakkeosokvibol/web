@@ -49,7 +49,10 @@ export class SignupPage implements OnInit {
         this.step = 2;
         break;
       case 'verifyCode':
-        await this.signupService.codeVerify(this.codeVerifyFormGroup);
+        await this.signupService.codeVerify(this.codeVerifyFormGroup, {
+          tel: this.signUpFormGroup.value.tel,
+          password: this.signUpFormGroup.value.password,
+        });
         break;
       default: {
         throw new Error('No form action detected!');
