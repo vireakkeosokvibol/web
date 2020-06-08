@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { initializeApp, auth } from 'firebase';
+import { initializeApp, auth } from 'firebase/app';
+import 'firebase/auth';
 import { FIREBASE } from 'src/config.json';
 import { FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +15,7 @@ export class SignupService {
   private firebaseApp: any;
   private confirmationResult: any;
 
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo, private router: Router) {}
 
   async initialize(): Promise<void> {
     this.firebaseApp = initializeApp(FIREBASE);
@@ -56,7 +58,7 @@ export class SignupService {
         }
 
         this.apollo
-          .mutate({
+          .mutate<{ users: { token: string } }>({
             mutation: gql`
               mutation users(
                 $tel: String!
@@ -72,6 +74,7 @@ export class SignupService {
                 ) {
                   code
                   message
+                  token
                 }
               }
             `,
@@ -83,7 +86,11 @@ export class SignupService {
           })
           .subscribe(
             ({ data }) => {
-              console.log(data);
+              if (!data.users.token) {
+                throw new Error('error token not found!');
+              }
+              window.localStorage.setItem('token', data.users.token);
+              this.router.navigate(['/']);
             },
             (error) => {
               throw new Error(error);

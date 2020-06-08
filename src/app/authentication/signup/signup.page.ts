@@ -60,7 +60,7 @@ export class SignupPage implements OnInit {
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.signupService.initialize();
   }
 }
