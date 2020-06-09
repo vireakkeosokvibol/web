@@ -20,5 +20,9 @@ export class SigninPage implements OnInit {
     });
   }
 
+  async onSubmit(): Promise<void> {
+
+  }
+
   ngOnInit() {}
 }

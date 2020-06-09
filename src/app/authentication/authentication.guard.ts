@@ -9,7 +9,23 @@ import gql from 'graphql-tag';
 export class AuthenticationGuard implements CanActivate {
   private commentsQuery: QueryRef<any>;
 
-  constructor(private apollo: Apollo, private router: Router) {}
+  constructor(private apollo: Apollo, private router: Router) {
+    this.apollo.subscribe({
+      query: gql`
+        subscription subscriptionData($token: String!) {
+          subscriptionData(input: { token: $token }) {
+            expired 
+          }
+        }
+      `,
+      variables: {
+        token: window.localStorage.token,
+      },
+      fetchPolicy: 'no-cache',
+    }).subscribe((data) => {
+      console.log(data)
+    });
+  }
 
   async canActivate(): Promise<boolean> {
     if (!window.localStorage.token || window.localStorage.token === '') {
@@ -58,33 +74,6 @@ export class AuthenticationGuard implements CanActivate {
       window.localStorage.removeItem('token');
       throw new Error(error);
     }
-
-    // this.commentsQuery.subscribeToMore({
-    //   document: gql`
-    //     subscription subscriptionData($id: String!) {
-    //       subscriptionData(token: { id: $id }) {
-    //         expired
-    //       }
-    //     }
-    //   `,
-    //   variables: {
-    //     id: window.localStorage.token,
-    //   },
-    //   updateQuery: (prev, { subscriptionData }) => {
-    //     if (!subscriptionData) {
-    //       return prev;
-    //     }
-
-    //     const newFeedItem = subscriptionData.data.subscriptionData;
-
-    //     return {
-    //       ...prev,
-    //       entry: {
-    //         comments: [newFeedItem, ...prev.entry.comments],
-    //       },
-    //     };
-    //   },
-    // });
   }
 }
 

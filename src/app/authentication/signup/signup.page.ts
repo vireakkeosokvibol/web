@@ -11,7 +11,7 @@ import { SignupService } from './signup.service';
 export class SignupPage implements OnInit {
   private signUpFormGroup: FormGroup;
   private codeVerifyFormGroup: FormGroup;
-  private step: number;
+  step: number;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -42,7 +42,7 @@ export class SignupPage implements OnInit {
     });
   }
 
-  private async onSubmit(action: string): Promise<void> {
+  async onSubmit(action: string): Promise<void> {
     switch (action) {
       case 'getDetail':
         await this.signupService.getDetail(this.signUpFormGroup);

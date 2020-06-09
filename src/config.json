@@ -1,5 +1,6 @@
 {
-  "APP_URI": [""],
+  "HTTP_URI": [],
+  "SOCKET_URI": [],
   "FIREBASE": {
     "apiKey": "",
     "authDomain": "",
