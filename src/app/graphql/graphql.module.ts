@@ -15,21 +15,18 @@ const uri: string = APP_URI[Math.floor(Math.random() * APP_URI.length)]; // <-- 
   exports: [ApolloModule, HttpLinkModule],
 })
 export class GraphQLModule {
-  constructor(
-    private apollo: Apollo,
-    private httpLink: HttpLink
-  ) {
+  constructor(private apollo: Apollo, private httpLink: HttpLink) {
     // Create an http link:
     const http = httpLink.create({
-      uri
+      uri,
     });
 
     // Create a WebSocket link:
     const ws = new WebSocketLink({
       uri: `ws://localhost:3000/graphql`,
       options: {
-        reconnect: true
-      }
+        reconnect: true,
+      },
     });
 
     // using the ability to split links, you can send data to each link
@@ -38,15 +35,18 @@ export class GraphQLModule {
       // split based on operation type
       ({ query }) => {
         const definition = getMainDefinition(query);
-        return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
+        return (
+          definition.kind === 'OperationDefinition' &&
+          definition.operation === 'subscription'
+        );
       },
       ws,
-      http,
+      http
     );
 
     this.apollo.create({
       link,
-      cache: new InMemoryCache()
+      cache: new InMemoryCache(),
     });
   }
 }

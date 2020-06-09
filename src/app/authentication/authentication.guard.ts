@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { QueryRef, Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -15,30 +13,49 @@ export class AuthenticationGuard implements CanActivate {
 
   async canActivate(): Promise<boolean> {
     if (!window.localStorage.token || window.localStorage.token === '') {
-      this.router.navigate(['/authentication/signup']);
+      this.router.navigateByUrl('/authentication/signin');
+      window.localStorage.removeItem('token');
       return false;
     }
 
     try {
-      const {
-        data,
-      }: { data: { session: { expired: boolean } } } = await this.apollo
-        .query<{ session: { expired: boolean } }>({
-          query: gql`
-            query session($id: String!) {
-              session(token: { id: $id }) {
-                expired
+      const tokenValid: Promise<boolean> = new Promise((resolve, reject) => {
+        this.apollo
+          .query<{ usersSessions: { expired: boolean } }>({
+            query: gql`
+              query usersSessions($token: String!) {
+                usersSessions(validate: { token: $token }) {
+                  expired
+                }
               }
+            `,
+            variables: {
+              token: window.localStorage.token,
+            },
+          })
+          .subscribe(
+            ({ data }) => {
+              if (data.usersSessions.expired === true) {
+                console.log('yes');
+                reject(false);
+              } else {
+                resolve(true);
+              }
+            },
+            (error) => {
+              reject(false);
             }
-          `,
-          variables: {
-            id: window.localStorage.token,
-          },
-        })
-        .toPromise();
+          );
+      });
 
-      console.log(data.session.expired);
+      if ((await tokenValid) === true) {
+        return true;
+      }
+
+      return false;
     } catch (error) {
+      this.router.navigateByUrl('/authentication/signin');
+      window.localStorage.removeItem('token');
       throw new Error(error);
     }
 
@@ -68,5 +85,21 @@ export class AuthenticationGuard implements CanActivate {
     //     };
     //   },
     // });
+  }
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class UnAuthenticationGuard implements CanActivate {
+  constructor(private router: Router) {}
+
+  async canActivate(): Promise<boolean> {
+    if (window.localStorage.token) {
+      this.router.navigateByUrl('/');
+      return false;
+    }
+
+    return true;
   }
 }

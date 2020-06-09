@@ -49,7 +49,7 @@ export class SignupService {
   ): Promise<void> {
     this.confirmationResult
       .confirm(formGroup.value.code)
-      .then(async (result) => {
+      .then(async () => {
         let firebaseToken: string;
         try {
           firebaseToken = await auth().currentUser.getIdToken(true);
