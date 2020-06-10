@@ -7,14 +7,12 @@ import gql from 'graphql-tag';
   providedIn: 'root',
 })
 export class AuthenticationGuard implements CanActivate {
-  private commentsQuery: QueryRef<any>;
-
   constructor(private apollo: Apollo, private router: Router) {
     if (window.localStorage.token && window.localStorage.token !== '') {
-      this.apollo.subscribe<{subscriptionData: {expired: boolean}}>({
+      this.apollo.subscribe<{userSessionsSubscription: {expired: boolean}}>({
         query: gql`
-          subscription subscriptionData($token: String!) {
-            subscriptionData(input: { token: $token }) {
+          subscription userSessionsSubscription($token: String!) {
+            userSessionsSubscription(input: { token: $token }) {
               expired 
             }
           }
@@ -24,7 +22,7 @@ export class AuthenticationGuard implements CanActivate {
         },
         fetchPolicy: 'no-cache',
       }).subscribe(({data}) => {
-        if (data.subscriptionData.expired === true) {
+        if (data.userSessionsSubscription.expired === true) {
           window.localStorage.removeItem('token')
           this.router.navigateByUrl('/authentication/signin');
         }
@@ -42,10 +40,10 @@ export class AuthenticationGuard implements CanActivate {
     try {
       const tokenValid: Promise<boolean> = new Promise((resolve, reject) => {
         this.apollo
-          .query<{ usersSessions: { expired: boolean } }>({
+          .query<{ userSessionsValidate: { expired: boolean } }>({
             query: gql`
-              query usersSessions($token: String!) {
-                usersSessions(validate: { token: $token }) {
+              query userSessionsValidate($token: String!) {
+                userSessionsValidate(input: { token: $token }) {
                   expired
                 }
               }
@@ -56,14 +54,13 @@ export class AuthenticationGuard implements CanActivate {
           })
           .subscribe(
             ({ data }) => {
-              if (data.usersSessions.expired === true) {
-                console.log('yes');
+              if (data.userSessionsValidate.expired === true) {
                 reject(false);
               } else {
                 resolve(true);
               }
             },
-            (error) => {
+            () => {
               reject(false);
             }
           );
