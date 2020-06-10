@@ -58,15 +58,15 @@ export class SignupService {
         }
 
         this.apollo
-          .mutate<{ users: { token: string } }>({
+          .mutate<{ usersSignup: { token: string } }>({
             mutation: gql`
-              mutation users(
+              mutation usersSignup(
                 $tel: String!
                 $password: String!
                 $firebaseToken: String!
               ) {
-                users(
-                  signup: {
+                usersSignup(
+                  input: {
                     tel: $tel
                     password: $password
                     firebaseToken: $firebaseToken
@@ -86,10 +86,10 @@ export class SignupService {
           })
           .subscribe(
             ({ data }) => {
-              if (!data.users.token) {
+              if (!data.usersSignup.token) {
                 throw new Error('error token not found!');
               }
-              window.localStorage.setItem('token', data.users.token);
+              window.localStorage.setItem('token', data.usersSignup.token);
               this.router.navigate(['/']);
             },
             (error) => {

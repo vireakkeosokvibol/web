@@ -9,24 +9,26 @@ import gql from 'graphql-tag';
 export class AuthenticationGuard implements CanActivate {
   constructor(private apollo: Apollo, private router: Router) {
     if (window.localStorage.token && window.localStorage.token !== '') {
-      this.apollo.subscribe<{userSessionsSubscription: {expired: boolean}}>({
-        query: gql`
-          subscription userSessionsSubscription($token: String!) {
-            userSessionsSubscription(input: { token: $token }) {
-              expired 
+      this.apollo
+        .subscribe<{ userSessionsSubscription: { expired: boolean } }>({
+          query: gql`
+            subscription userSessionsSubscription($token: String!) {
+              userSessionsSubscription(input: { token: $token }) {
+                expired
+              }
             }
+          `,
+          variables: {
+            token: window.localStorage.token,
+          },
+          fetchPolicy: 'no-cache',
+        })
+        .subscribe(({ data }) => {
+          if (data.userSessionsSubscription.expired === true) {
+            window.localStorage.removeItem('token');
+            this.router.navigateByUrl('/authentication/signin');
           }
-        `,
-        variables: {
-          token: window.localStorage.token,
-        },
-        fetchPolicy: 'no-cache',
-      }).subscribe(({data}) => {
-        if (data.userSessionsSubscription.expired === true) {
-          window.localStorage.removeItem('token')
-          this.router.navigateByUrl('/authentication/signin');
-        }
-      });
+        });
     }
   }
 
