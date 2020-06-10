@@ -3,5 +3,6 @@
     <ion-button fill="clear" color="dark" disabled>home</ion-button>
     <ion-button fill="outline" slot="end" routerLink="/authentication/signin" *ngIf="!token">sign in</ion-button>
     <ion-button fill="solid" slot="end" routerLink="/authentication/signup" *ngIf="!token">sign up</ion-button>
+    <ion-button fill="solid" slot="end" (click)="signout()" *ngIf="token">Sign Out</ion-button>
   </ion-toolbar>
 </ion-header>

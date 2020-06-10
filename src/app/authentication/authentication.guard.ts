@@ -10,21 +10,26 @@ export class AuthenticationGuard implements CanActivate {
   private commentsQuery: QueryRef<any>;
 
   constructor(private apollo: Apollo, private router: Router) {
-    this.apollo.subscribe({
-      query: gql`
-        subscription subscriptionData($token: String!) {
-          subscriptionData(input: { token: $token }) {
-            expired 
+    if (window.localStorage.token && window.localStorage.token !== '') {
+      this.apollo.subscribe<{subscriptionData: {expired: boolean}}>({
+        query: gql`
+          subscription subscriptionData($token: String!) {
+            subscriptionData(input: { token: $token }) {
+              expired 
+            }
           }
+        `,
+        variables: {
+          token: window.localStorage.token,
+        },
+        fetchPolicy: 'no-cache',
+      }).subscribe(({data}) => {
+        if (data.subscriptionData.expired === true) {
+          window.localStorage.removeItem('token')
+          this.router.navigateByUrl('/authentication/signin');
         }
-      `,
-      variables: {
-        token: window.localStorage.token,
-      },
-      fetchPolicy: 'no-cache',
-    }).subscribe((data) => {
-      console.log(data)
-    });
+      });
+    }
   }
 
   async canActivate(): Promise<boolean> {
