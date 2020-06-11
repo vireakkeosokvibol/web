@@ -12,7 +12,7 @@ export class SigninPage implements OnInit {
 
   constructor(
     private signinService: SigninService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
   ) {
     this.signinForm = this.formBuilder.group({
       account: '',
@@ -21,7 +21,9 @@ export class SigninPage implements OnInit {
   }
 
   async signinFormSubmit(): Promise<void> {
-
+    if (this.signinForm.valid) {
+      this.signinService.signin(this.signinForm.value);
+    }
   }
 
   ngOnInit() {}

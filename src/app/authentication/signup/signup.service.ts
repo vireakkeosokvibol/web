@@ -6,6 +6,7 @@ import { FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { Router } from '@angular/router';
+import { signupOutputDto, signupInputDto } from './signup.type';
 
 @Injectable({
   providedIn: 'root',
@@ -45,7 +46,7 @@ export class SignupService {
 
   async codeVerify(
     formGroup: FormGroup,
-    param: { tel: string; password: string }
+    param: signupInputDto
   ): Promise<void> {
     this.confirmationResult
       .confirm(formGroup.value.code)
@@ -58,7 +59,7 @@ export class SignupService {
         }
 
         this.apollo
-          .mutate<{ usersSignup: { token: string } }>({
+          .mutate<{ usersSignup: signupOutputDto }>({
             mutation: gql`
               mutation usersSignup(
                 $tel: String!
