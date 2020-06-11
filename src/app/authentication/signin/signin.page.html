@@ -1,20 +1,19 @@
 <app-header></app-header>
 
 <ion-content>
-  <ion-grid>
+  <ion-grid style="margin-top:25px;">
     <ion-row>
-      <ion-col size="2"></ion-col>
-      <ion-col size="8">
-        <ion-row>
-          <ion-col size="6">
-            <div class="border">
+      <ion-col size="12" style="display: flex; justify-content: center;">
+        <ion-row class="border" style="width: 100%; max-width: 960px;">
+          <ion-col size="12" size-md="6" class="box">
+            <div>
               <ion-text color="primary">
                 <h3>Sign in with your account.</h3>
               </ion-text>
               <!--
                 Start login form.
               -->
-              <form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+              <form [formGroup]="signinForm" (ngSubmit)="signinFormSubmit()">
                 <ion-item>
                   <ion-label position="floating" color="medium">Email, username or phone number <ion-text color="danger">*</ion-text></ion-label>
                   <ion-input required formControlName="account" type="text"></ion-input>
@@ -28,7 +27,7 @@
                 </ion-text>
                 <ion-item lines="none">
                   <ion-label></ion-label>
-                  <ion-button block color="primary" type="submit" expand="block" size="default" style="width: 100%;">
+                  <ion-button block color="primary" type="submit" expand="block" size="default" style="width: 100%;" disabled="!signinForm.valid">
                     Login
                   </ion-button>
                 </ion-item>
@@ -38,12 +37,22 @@
               -->
             </div>
           </ion-col>
-          <ion-col size="6">
-            <div class="border">test</div>
+          <ion-col size="12" size-md="6" class="box" style="background-color: #fafafa;">
+            <div style="height: 100%; display: flex; justify-content: center; align-items: center;">
+              <div>
+                <div style="border: 2px dashed #ddd; padding: 10px; background-color:#fff;">
+                  <ion-img src="/assets/qrcode.png" style="width: 175px; display: block;"></ion-img>
+                </div>
+                <div style="color: #333; font-size: 64px; margin-top: 25px; text-align: center;">
+                  <ion-icon name="logo-android"></ion-icon>
+                  <ion-icon name="logo-apple"></ion-icon>
+                </div>
+                <div style="font-size: 12px; text-align: center;">Sign in with your mobile app. </div>
+              </div>
+            </div>
           </ion-col>
         </ion-row>
       </ion-col>
-      <ion-col size="2"></ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>

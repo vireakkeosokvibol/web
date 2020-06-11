@@ -9,15 +9,15 @@ import { SignupService } from './signup.service';
   styleUrls: ['./signup.page.scss'],
 })
 export class SignupPage implements OnInit {
-  private signUpFormGroup: FormGroup;
-  private codeVerifyFormGroup: FormGroup;
+  signupFormGroup: FormGroup;
+  codeVerifyFormGroup: FormGroup;
   step: number;
 
   constructor(
     private formBuilder: FormBuilder,
     private signupService: SignupService
   ) {
-    this.signUpFormGroup = this.formBuilder.group({
+    this.signupFormGroup = this.formBuilder.group({
       tel: [
         '',
         Validators.compose([Validators.required, PhoneValidator.validate()]),
@@ -45,13 +45,13 @@ export class SignupPage implements OnInit {
   async onSubmit(action: string): Promise<void> {
     switch (action) {
       case 'getDetail':
-        await this.signupService.getDetail(this.signUpFormGroup);
+        await this.signupService.getDetail(this.signupFormGroup);
         this.step = 2;
         break;
       case 'verifyCode':
         await this.signupService.codeVerify(this.codeVerifyFormGroup, {
-          tel: this.signUpFormGroup.value.tel,
-          password: this.signUpFormGroup.value.password,
+          tel: this.signupFormGroup.value.tel,
+          password: this.signupFormGroup.value.password,
         });
         break;
       default: {

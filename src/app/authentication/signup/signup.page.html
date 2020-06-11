@@ -9,7 +9,7 @@
           <ion-text color="primary">
             <h3>Sign up with your account.</h3>
           </ion-text>
-          <form [formGroup]="signUpFormGroup" (ngSubmit)="onSubmit('getDetail')">
+          <form [formGroup]="signupFormGroup" (ngSubmit)="onSubmit('getDetail')">
             <ion-item>
               <ion-label position="floating" color="medium">Phone number</ion-label>
               <ion-input required formControlName="tel" type="text"></ion-input>
@@ -23,7 +23,7 @@
             </ion-text>
             <ion-item lines="none">
               <ion-label></ion-label>
-              <ion-button block color="primary" type="submit" expand="block" [disabled]="!signUpFormGroup.valid"
+              <ion-button block color="primary" type="submit" expand="block" [disabled]="!signupFormGroup.valid"
                 size="default" style="width: 100%;">
                 sign up
               </ion-button>
